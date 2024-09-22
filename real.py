@@ -1,10 +1,50 @@
-import os, time
-for root, dirs, files in os.walk('.'):
-    for file in files:
-        filepath = os.path.join(file)
-        filetime = os.path.getmtime(file)
-        formatted_time = time.strftime("%d.%m.%Y %H:%M", time.localtime(filetime))
-        filesize = os.path.getsize(file)
-        parent_dir = os.path.dirname(file)
-        print(f'Обнаружен файл: {file}, Путь: {filepath}, Размер: {filesize} байт, '
-              f'Время изменения: {formatted_time}, Родительская директория: {parent_dir}')
+class StepValueError(Exception):
+    pass
+
+
+class Iterator:
+    def __init__(self, start, stop, step=1):
+        self.start = start
+        self.stop = stop
+        if step == 0:
+            raise StepValueError('шаг не может быть равен нулю')
+        else:
+            self.step = step
+        self.pointer = start
+
+    def __iter__(self):
+        self.pointer = self.start- self.step
+        return self
+
+    def __next__(self):
+        if (self.pointer + self.step - self.stop) / self.step <= 0:
+            self.pointer += self.step
+            return self.pointer
+        else:
+            raise StopIteration
+
+
+try:
+    iter1 = Iterator(100, 200, 0)
+    for i in iter1:
+        print(i, end=' ')
+except StepValueError:
+    print('Шаг указан неверно')
+
+iter2 = Iterator(-5, 1)
+iter3 = Iterator(6, 15, 2)
+iter4 = Iterator(5, 1, -1)
+iter5 = Iterator(10, 1)
+
+for i in iter2:
+    print(i, end=' ')
+print()
+for i in iter3:
+    print(i, end=' ')
+print()
+for i in iter4:
+    print(i, end=' ')
+print()
+for i in iter5:
+    print(i, end=' ')
+print()
